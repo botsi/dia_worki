@@ -410,7 +410,7 @@ var select_pdf = {
 
         for (var i = 1; i < raws.length; i++) {
             if (raws[i].getElementsByClassName('b')[0].value != '') {
-                tb.push([raws[i].getElementsByClassName('b')[0].value, raws[i].getElementsByClassName('d')[0].innerHTML + ' ' + adjustments_de.monthNames[today[2]], 'A', '']);
+                tb.push([raws[i].getElementsByClassName('b')[0].value, raws[i].getElementsByClassName('d')[0].innerHTML + ' ' + adjustments_de.monthNames[today[2]], '', '']);
             }
 
             select_pdf.save_raws.d.push(raws[i].getElementsByClassName('d')[0].innerHTML);
