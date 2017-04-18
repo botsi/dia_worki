@@ -1,4 +1,4 @@
-var today, d2, d1;
+var taxi, today, d2, d1;
 
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
@@ -165,6 +165,16 @@ adjustments_de = {
 
 
 var define = function() {
+
+
+    taxi = window.location.search.substring(1);
+
+
+    if (taxi != user.lg) {
+        document.getElementsByClassName('check_pdf_parent')[0].style.display = 'none';
+        document.getElementsByClassName('check_pdf_parent')[0].previousSibling.value = 'PDF speichern';
+    }
+
 
     var f1 = document.getElementById('f1');
     var f2 = document.getElementById('f2');
@@ -704,9 +714,6 @@ var download_pdf = function(tb, ek) {
     }
 
     // now save work data to text file
-
-
-    var taxi = window.location.search.substring(1);
 
     if (taxi == user.lg) {
 
