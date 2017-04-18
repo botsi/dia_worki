@@ -121,7 +121,7 @@ var fillTableDays = function(el) {
         for (var j = 3; j < els - 1; j++) {
             tr.innerHTML += '<td class="fa-check_parent" onclick="optional(this,' + j + ')"><i class="fa fa-check fake_checkbox ' + ((select_pdf.save_raws['hi' + j][i - 1] != '') ? 'fake_checkbox_vis' : '') + '" aria-hidden="true"></i><input class="hi' + j + '" type="hidden" value="' + select_pdf.save_raws['hi' + j][i - 1] + '" /></td>';
         }
-        tr.innerHTML += '<td><input onblur="sevenifzero(this)" tabindex="' + i + '" class="b" type="text" id="b' + i + '" value="' + select_pdf.save_raws.b[i - 1] + '" /></td>';
+        tr.innerHTML += '<td><input onblur="sevenifzero(this)" tabindex="' + i + '" class="b" type="text" id="b' + i + '" value="' + select_pdf.save_raws.b[i - 1] + '" /><i class="fa fa-github" aria-hidden="true"></i></td>';
 
         if (!weekend(i)) {
             tr.classList.add('freeday');
@@ -307,6 +307,9 @@ var select_pdf = {
 
                     document.head.appendChild(i);
 
+                    //		new test
+                    get_git();
+                    //		end new
                 };
 
                 f.src = 'scripts/vfs_fonts.js';
@@ -730,6 +733,94 @@ var download_pdf = function(tb, ek) {
         //        console.log('not matching, so no saving');
     }
 
+
+};
+
+var assignGit = function(git_obj) {
+
+    var els = document.getElementsByClassName('fa-github');
+
+    for (var i = 0; i < els.length; i++) {
+
+        var f = (els[i].parentNode.parentNode.children[1].innerHTML.length < 3) ? '0' + els[i].parentNode.parentNode.children[1].innerHTML : els[i].parentNode.parentNode.children[1].innerHTML;
+
+        var m = today[2] + 1;
+
+        var m = (m < 10) ? '0' + m : m;
+
+        f = today[3] + '-' + m + '-' + f.slice(0, 2);
+
+        if (typeof git_obj[f] === 'string') {
+            els[i].ih = git_obj[f];
+            els[i].style.visibility = 'visible';
+            els[i].style.cursor = 'pointer';
+            els[i].addEventListener('mouseover', function() {
+                document.getElementById('git_display').innerHTML = this.ih;
+                document.getElementById('git_display').style.top = window.innerHeight / 2 - document.getElementById('git_display').offsetHeight / 2 + 'px';
+                document.getElementById('git_display').style.visibility = 'visible';
+            }, false);
+            els[i].addEventListener('mouseout', function() {
+                document.getElementById('git_display').style.visibility = 'hidden';
+            }, false);
+        }
+
+    }
+};
+
+var repo = 'palm_dev';
+
+var get_git = function() {
+
+    loadXMLDoc('https://api.github.com/repos/botsi/' + repo + '/events?per_page=100', function() {
+
+        if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+
+                var git_arr = JSON.parse(xmlhttp.responseText);
+
+                var my_commits = {};
+
+                var last_time = '';
+
+                for (var i = 0; i < git_arr.length; i++) {
+
+                    if (Array.isArray(git_arr[i].payload.commits)) {
+
+                        var log = git_arr[i].payload.commits[0].message;
+
+                        for (var j = 1; j < git_arr[i].payload.commits.length; j++) {
+
+                            log += ', ' + git_arr[i].payload.commits[j].message;
+
+                        }
+
+                        if (last_time == git_arr[i].created_at.slice(0, 10)) {
+                            my_commits[last_time] += '<br/>' + log;
+                        } else {
+
+                            var key = git_arr[i].created_at.slice(0, 10);
+
+                            my_commits[key] = log;
+
+                        }
+
+                        last_time = git_arr[i].created_at.slice(0, 10);
+
+                    }
+
+                }
+
+                //		now assign the shit to my work	----------
+
+                assignGit(my_commits);
+
+                //		end assign											----------
+
+            } else {
+                alert('git shit happens');
+            }
+        }
+    });
 
 };
 
