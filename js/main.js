@@ -752,15 +752,21 @@ var assignGit = function(git_obj) {
 
         if (typeof git_obj[f] === 'string') {
             els[i].ih = git_obj[f];
-            els[i].style.visibility = 'visible';
+            els[i].classList.add('vis_in');
             els[i].style.cursor = 'pointer';
             els[i].addEventListener('mouseover', function() {
                 document.getElementById('git_display').innerHTML = this.ih;
                 document.getElementById('git_display').style.top = window.innerHeight / 2 - document.getElementById('git_display').offsetHeight / 2 + 'px';
-                document.getElementById('git_display').style.visibility = 'visible';
+
+                document.getElementById('git_display').classList.remove('vis_out');
+                document.getElementById('git_display').classList.add('vis_in');
+
             }, false);
             els[i].addEventListener('mouseout', function() {
-                document.getElementById('git_display').style.visibility = 'hidden';
+
+                document.getElementById('git_display').classList.remove('vis_in');
+                document.getElementById('git_display').classList.add('vis_out');
+
             }, false);
         }
 
